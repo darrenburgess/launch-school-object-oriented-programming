@@ -24,5 +24,3 @@ milo = GoodDog.new("Milo", 7)
 puts milo.name
 
 puts milo.show_human_years
-
-
