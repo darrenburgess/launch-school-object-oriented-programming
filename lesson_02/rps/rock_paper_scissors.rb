@@ -9,7 +9,7 @@ module Messaging
 end
 
 class RulesParse < Rules
-  attr_accessor :rule, :choices, :game_choices
+  attr_accessor :game_choices
 
   def initialize(player_type = :human)
     super
@@ -50,7 +50,7 @@ class Player < RulesParse
 end
 
 class RPSGame < RulesParse
-  attr_accessor :human, :computer
+  attr_accessor :human, :computer, :rule, :choices
   include Messaging
 
   def initialize
