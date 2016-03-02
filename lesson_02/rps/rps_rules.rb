@@ -1,26 +1,31 @@
-GAME_RULES = {
-  "3" => {
-      rock: { scissors:"crushes" },
-      paper: { rock:"covers" },
-      scissors: { paper:"cuts" }
-     },
-  "5" => {
-      rock: {
-        scissors:"crushes",
-        lizard:"crushes" },
-      paper: {
-        rock:"covers",
-        spock:"disproves" },
-      scissors: {
-        paper:"cuts",
-        lizard:"decapitates" },
-      lizard: {
-        paper:"eats",
-        spock:"poisons" },
-      spock: {
-        rock:"vaporizes",
-        scissors:"smashes" }
-      },
+class Rules
+  attr_accessor :game_choices
+  attr_reader   :rules
+
+def initialize(player_type=nil)
+  @rules = {
+    "3" => {
+        rock: { scissors:"crushes" },
+        paper: { rock:"covers" },
+        scissors: { paper:"cuts" }
+       },
+    "5" => {
+        rock: {
+          scissors:"crushes",
+          lizard:"crushes" },
+        paper: {
+          rock:"covers",
+          spock:"disproves" },
+        scissors: {
+          paper:"cuts",
+          lizard:"decapitates" },
+        lizard: {
+          paper:"eats",
+          spock:"poisons" },
+        spock: {
+          rock:"vaporizes",
+          scissors:"smashes" }
+        },
   "101" => { :dynamite => { :tornado => "outclasses", :quicksand => "clears", :pit => "creates", :chain => "explodes saw", :gun => "outclasses", :law => "breaks", :whip => "explodes", :sword => "explodes", :rock => "explodes", :death => "causes", :wall => "explodes", :sun => "smoke blots out", :camera => "explodes", :fire => "starts", :school => "explodes", :scissors => "explodes", :poison => "explodes", :cage => "explodes", :axe => "explodes", :peace => "disturbs", :computer => "explodes", :castle => "explodes", :snake => "explodes", :blood => "spills", :porcupine => "explodes", :vulture => "explodes", :monkey => "explodes", :king => "explodes", :queen => "explodes", :prince => "explodes ss", :police => "explodes", :woman => "explodes", :baby => "explodes", :man => "explodes", :home => "explodes", :train => "explodes", :car => "explodes", :noise => "makes", :bicycle => "explodes", :tree => "explodes", :turnip => "explodes", :duck => "explodes", :wolf => "explodes", :cat => "explodes", :bird => "explodes", :fish => "explodes", :spider => "explodes", :cockroach => "explodes"
     }, :tornado => { :quicksand => "outclasses", :"air pit" => "is", :chain => "sweeps away saw", :gun => "sweeps away", :law => "knows no", :whip => "sweeps away", :sword => "sweeps away", :rock => "sweeps away", :death => "causes", :wall => "destroys", :sun => "blocks", :camera => "challenges", :fire => "starts", :school => "destroys", :scissors => "sweeps away", :poison => "sweeps away", :cage => "sweeps away", :axe => "sweeps away", :peace => "disturbs", :computer => "destroys", :castle => "destroys", :snake => "sweeps away", :blood => "spills", :porcupine => "sweeps away", :vulture => "sweeps away", :monkey => "sweeps away", :king => "sweeps away", :queen => "sweeps away", :prince => "sweeps away ss", :police => "sweeps away", :woman => "sweeps away", :baby => "sweeps away", :man => "sweeps away", :home => "destroys", :train => "derails", :car => "sweeps away", :noise => "makes", :bicycle => "sweeps away", :tree => "sweeps away", :turnip => "sweeps away", :duck => "sweeps away", :wolf => "sweeps away", :cat => "sweeps away", :bird => "sweeps away", :fish => "sweeps away", :spider => "sweeps away", :"home  cockroach" => "wrecks  of", :brain => "confounds"
     }, :quicksand => { :pit => "becomes", :"swallows chain" => "sows saw", :"swallows gun" => "sows", :law => "knows no", :whip => "too big for", :"swallows sword" => "sows", :"swallows rock" => "sows", :death => "causes", :wall => "protects", :sun => "removes", :"swallows camera" => "sows", :fire => "engulfs", :school => "closes", :"swallows scissors" => "sows", :poison => "engulfs", :cage => "surrounds", :"swallows axe" => "sows", :peace => "disturbs", :"swallows computer" => "sows", :castle => "protects", :"swallows snake" => "sows", :"suffocates blood" => "suffoes", :"swallows porcupine" => "sows", :"swallows vulture" => "sows", :"swallows monkey" => "sows", :"swallows king" => "sows", :"swallows queen" => "sows", :"swallows prince" => "sows ss", :"swallows police" => "sows", :"swallows woman" => "sows", :"swallows baby" => "sows", :"swallows man" => "sows", :home => "ruins", :train => "ruins  track", :"swallows  car" => "sows", :noise => "engulfs", :"swallows bicycle" => "sows", :tree => "topples", :"swallows turnip" => "sows", :"swallows duck" => "sows", :"swallows wolf" => "sows", :"swallows cat" => "sows", :"swallows bird" => "sows  nest", :"swallows fish" => "sows", :"swallows spider" => "sows", :"swallows cockroach" => "sows", :"swallows brain" => "sows", :community => "threatens"
@@ -125,3 +130,9 @@ GAME_RULES = {
     }
 }
 }.freeze
+
+@game_choices = rules.keys.map(&:to_s)
+
+end # def initialize
+
+end # class Rules
