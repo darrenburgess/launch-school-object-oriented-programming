@@ -20,7 +20,6 @@ end
 
 class Player < RulesParse
   attr_accessor :move
-  include Messaging
 
   def initialize(player_type = :human)
     super
