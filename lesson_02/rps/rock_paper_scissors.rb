@@ -15,7 +15,6 @@ class RulesParse < Rules
     super
     @game_choices = rules.keys.map(&:to_s)
   end
-
 end
 
 class Player < RulesParse
@@ -33,7 +32,7 @@ class Player < RulesParse
     if human?
       choice = nil
       loop do
-        prompt "Choose #{choices.join ", "}"
+        prompt "Choose #{choices.join ', '}"
         choice = gets.chomp
         break if choices.include? choice
         prompt "Sorry, invalid choice"
@@ -67,7 +66,7 @@ class RPSGame < RulesParse
       answer = gets.chomp
       break if game_choices.include? answer
     end
-    self.rule = rules[answer.to_s] 
+    self.rule = rules[answer.to_s]
     self.choices = rule.keys.map(&:to_s)
   end
 
@@ -94,7 +93,7 @@ class RPSGame < RulesParse
     action = win?(computer, player)
     return "Computer wins: #{computer} #{action} #{player}" if action
 
-    return "Tie!!"
+    "Tie!!"
   end
 
   def play_again?
