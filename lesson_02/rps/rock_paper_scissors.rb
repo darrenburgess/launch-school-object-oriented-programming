@@ -1,31 +1,49 @@
 require 'pry'
 
-require './rps_rules.rb'
+require_relative 'rps_rules.rb'
 
 module Messaging
   def prompt(message)
     puts "=> #{message}"
   end
-end
 
-class RulesParse < Rules
-  attr_accessor :game_choices
-
-  def initialize(player_type = :human)
-    super
-    @game_choices = rules.keys.map(&:to_s)
+  def clear
+    system 'clear' or system 'cls'
   end
+
+  def display_welcome_message
+    prompt "Welcome to Rock, Paper, Scissors"
+  end
+
+  def display_goodbye_message
+    prompt "Thank you for playing"
+  end
+  
 end
 
-class Player < RulesParse
-  attr_accessor :move
+class Player
+  attr_accessor :move, :name
 
   include Messaging
 
   def initialize(player_type = :human)
-    super
     @player_type = player_type
     @move = nil
+    set_name
+  end
+
+  def set_name
+    if human?
+      n = nil
+      prompt "What is your name?"
+      loop do
+        n = gets.chomp        
+        break unless n.empty?
+      end
+      self.name = n
+    else
+      self.name = %w(Chappie R2D2 C3P0 Terminator Robocop Wall-E HAL-9000 Data).sample 
+    end
   end
 
   def choose(choices)
@@ -33,7 +51,7 @@ class Player < RulesParse
       choice = nil
       loop do
         prompt "Choose #{choices.join ', '}"
-        choice = gets.chomp
+        choice = gets.chomp.downcase
         break if choices.include? choice
         prompt "Sorry, invalid choice"
       end
@@ -48,38 +66,27 @@ class Player < RulesParse
   end
 end
 
-class RPSGame < RulesParse
-  attr_accessor :human, :computer, :rule, :choices
+class RPSGame
+  attr_accessor :human, :robot, :rule, :choices
+
   include Messaging
 
   def initialize
-    super
+    clear
     @human = Player.new
-    @computer = Player.new(:computer)
+    @robot = Player.new(:robot)
     @rule = nil
   end
 
   def choose_game
     answer = nil
     loop do
-      prompt "Choose from the following RPS games: #{game_choices}"
+      prompt "Choose from the following RPS games: #{GAME_CHOICES.join ', '}"
       answer = gets.chomp
-      break if game_choices.include? answer
+      break if GAME_CHOICES.include? answer
     end
-    self.rule = rules[answer.to_s]
+    self.rule = RULES[answer.to_s]
     self.choices = rule.keys.map(&:to_s)
-  end
-
-  def clear
-    system 'clear' or system 'cls'
-  end
-
-  def display_welcome_message
-    prompt "Welcome to Rock, Paper, Scissors"
-  end
-
-  def display_goodbye_message
-    prompt "Thank you for playing"
   end
 
   def win?(first, second)
@@ -88,12 +95,11 @@ class RPSGame < RulesParse
 
   def determine_winner(player, computer)
     action = win?(player, computer)
-    return "You win: #{player} #{action} #{computer}" if action
+    return "#{human.name} wins: #{player} #{action} #{computer}" if action
 
     action = win?(computer, player)
-    return "Computer wins: #{computer} #{action} #{player}" if action
-
-    "Tie!!"
+    return "#{robot.name} wins: #{computer} #{action} #{player}" if action
+    "Tie!! #{human.name}: #{player} #{robot.name}: #{computer}"
   end
 
   def play_again?
@@ -103,8 +109,7 @@ class RPSGame < RulesParse
       answer = gets.chomp.downcase.chars.first
       break if %w(y n).include? answer
     end
-    return true if answer == "y"
-    false
+    answer == "y"
   end
 
   def play
@@ -113,8 +118,8 @@ class RPSGame < RulesParse
     choose_game
     loop do
       human.choose(choices)
-      computer.choose(choices)
-      prompt determine_winner(human.move, computer.move)
+      robot.choose(choices)
+      prompt determine_winner(human.move, robot.move)
       break unless play_again?
       clear
     end
