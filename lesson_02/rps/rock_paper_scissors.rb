@@ -26,43 +26,41 @@ class Player
 
   include Messaging
 
-  def initialize(player_type = :human)
-    @player_type = player_type
-    @move = nil
+  def initialize
     set_name
   end
+end
 
+class Human < Player
   def set_name
-    if human?
-      n = nil
-      prompt "What is your name?"
-      loop do
-        n = gets.chomp        
-        break unless n.empty?
-      end
-      self.name = n
-    else
-      self.name = %w(Chappie R2D2 C3P0 Terminator Robocop Wall-E HAL-9000 Data).sample 
+    n = nil
+    prompt "What is your name?"
+    loop do
+      n = gets.chomp        
+      break unless n.empty?
     end
+    self.name = n
   end
 
   def choose(choices)
-    if human?
-      choice = nil
-      loop do
-        prompt "Choose #{choices.join ', '}"
-        choice = gets.chomp.downcase
-        break if choices.include? choice
-        prompt "Sorry, invalid choice"
-      end
-      self.move = choice
-    else
-      self.move = choices.sample
+    choice = nil
+    loop do
+      prompt "Choose #{choices.join ', '}"
+      choice = gets.chomp.downcase
+      break if choices.include? choice
+      prompt "Sorry, invalid choice"
     end
+    self.move = choice
+  end
+end
+
+class Robot < Player
+  def set_name
+    self.name = %w(Chappie R2D2 C3P0 Terminator Robocop Wall-E HAL-9000 Data).sample 
   end
 
-  def human?
-    @player_type == :human
+  def choose(choices)
+    self.move = choices.sample
   end
 end
 
@@ -73,8 +71,8 @@ class RPSGame
 
   def initialize
     clear
-    @human = Player.new
-    @robot = Player.new(:robot)
+    @human = Human.new
+    @robot = Robot.new
     @rule = nil
   end
 
