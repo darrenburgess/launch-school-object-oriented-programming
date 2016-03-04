@@ -18,7 +18,6 @@ module Messaging
   def display_goodbye_message
     prompt "Thank you for playing"
   end
-  
 end
 
 class Player
@@ -36,7 +35,7 @@ class Human < Player
     n = nil
     prompt "What is your name?"
     loop do
-      n = gets.chomp        
+      n = gets.chomp
       break unless n.empty?
     end
     self.name = n
@@ -56,7 +55,7 @@ end
 
 class Robot < Player
   def set_name
-    self.name = %w(Chappie R2D2 C3P0 Terminator Robocop Wall-E HAL-9000 Data).sample 
+    self.name = %w(Chappie R2D2 C3P0 Terminator Robocop Wall-E HAL-9000 Data).sample
   end
 
   def choose(choices)
