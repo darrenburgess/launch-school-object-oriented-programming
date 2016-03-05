@@ -20,12 +20,22 @@ module Messaging
   end
 end
 
-class Player
+class Score
+  attr_accessor :score
+
+  def increment
+   score += 1
+  end
+end
+
+class Player < Score
   attr_accessor :move, :name
 
   include Messaging
 
   def initialize
+    super
+    @score = 0
     set_name
   end
 end
@@ -92,10 +102,17 @@ class RPSGame
 
   def determine_winner(player, computer)
     action = win?(player, computer)
-    return "#{human.name} wins: #{player} #{action} #{computer}" if action
-
+    if action
+      human.increment
+      return "#{human.name} wins: #{player} #{action} #{computer}"
+    end
+    
     action = win?(computer, player)
-    return "#{robot.name} wins: #{computer} #{action} #{player}" if action
+    if action
+      robot.increment
+      return "#{robot.name} wins: #{computer} #{action} #{player}"
+    end
+
     "Tie!! #{human.name}: #{player} #{robot.name}: #{computer}"
   end
 
