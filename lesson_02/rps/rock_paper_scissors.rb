@@ -22,9 +22,13 @@ end
 
 class Score
   attr_accessor :score
+ 
+  def initialize
+    @score = 0
+  end
 
   def increment
-   score += 1
+    self.score += 1
   end
 end
 
@@ -35,7 +39,6 @@ class Player < Score
 
   def initialize
     super
-    @score = 0
     set_name
   end
 end
@@ -75,6 +78,8 @@ end
 
 class RPSGame
   attr_accessor :human, :robot, :rule, :choices
+
+  MAX_SCORE = 3
 
   include Messaging
 
@@ -116,6 +121,20 @@ class RPSGame
     "Tie!! #{human.name}: #{player} #{robot.name}: #{computer}"
   end
 
+  def display_score
+    prompt "#{human.name}: #{human.score}  |  #{robot.name}: #{robot.score}"
+  end
+
+  def overall_winner?
+    human.score == MAX_SCORE || robot.score == MAX_SCORE
+  end
+
+  def overall_winner
+    return "#{human.name} wins" if human.score == MAX_SCORE
+    return "#{robot.name} wins" if robot.score == MAX_SCORE
+    "No overall winner.  You quit early"
+  end
+
   def play_again?
     answer = nil
     loop do
@@ -131,12 +150,16 @@ class RPSGame
     display_welcome_message
     choose_game
     loop do
+      binding.pry
       human.choose(choices)
       robot.choose(choices)
       prompt determine_winner(human.move, robot.move)
+      display_score
+      break if overall_winner?
       break unless play_again?
       clear
     end
+    prompt overall_winner
     display_goodbye_message
   end
 end
