@@ -33,17 +33,18 @@ class Score
 end
 
 class Player < Score
-  attr_accessor :move, :name, :move_history, :test
+  attr_accessor :move, :name, :move_history
 
   include Messaging
 
   def initialize
     super
-    move_history = []
+    self.move_history = []
     set_name
   end
 
-  def store_move
+  def store_result
+    self.move_history << move
   end
 end
 
@@ -155,7 +156,9 @@ class RPSGame
     choose_game
     loop do
       human.choose(choices)
+      human.store_result
       robot.choose(choices)
+      robot.store_result
       prompt determine_winner(human.move, robot.move)
       display_score
       break if overall_winner?
