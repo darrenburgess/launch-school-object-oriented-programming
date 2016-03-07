@@ -33,7 +33,7 @@ class Score
 end
 
 class Player < Score
-  attr_accessor :move, :name, :move_history
+  attr_accessor :move, :name, :move_history, :test
 
   include Messaging
 
@@ -154,7 +154,6 @@ class RPSGame
     display_welcome_message
     choose_game
     loop do
-      binding.pry
       human.choose(choices)
       robot.choose(choices)
       prompt determine_winner(human.move, robot.move)
