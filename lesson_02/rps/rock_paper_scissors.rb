@@ -33,13 +33,17 @@ class Score
 end
 
 class Player < Score
-  attr_accessor :move, :name
+  attr_accessor :move, :name, :move_history
 
   include Messaging
 
   def initialize
     super
+    move_history = []
     set_name
+  end
+
+  def store_move
   end
 end
 
