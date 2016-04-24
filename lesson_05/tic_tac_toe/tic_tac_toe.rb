@@ -102,8 +102,8 @@ class TTTGame
     system "clear" or system "cls"
   end
 
-  def display_board
-    clear
+  def display_board(refresh = true)
+    clear if refresh
     puts "Your mark is #{human.marker}. Computer mark is #{computer.marker}."
     puts ""
     puts "     |     |"
@@ -161,10 +161,14 @@ class TTTGame
     true if answer == 'y'
   end
 
+  def display_welcome_message
+    puts "Welcome to Tic Tac Toe!"
+  end
+
   def play
     clear
-    puts "Welcome to Tic Tac Toe!"
-    display_board
+    display_welcome_message
+    display_board(false)
     loop do
       human_moves
       break if board.someone_won? || board.full?
