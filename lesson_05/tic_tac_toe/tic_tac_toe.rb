@@ -151,14 +151,19 @@ class TTTGame
   end
 
   def play_again?
-    puts "Do you want to play again (y or n)?"
-    answer = gets.chomp.chr
-    true if answer == "y" || answer == "Y"
+    answer = nil
+    loop do
+      puts "Do you want to play again (y or n)?"
+      answer = gets.chomp.downcase
+      break if %w(y n).include? answer
+      puts "Answer must by y or n"
+    end
+    true if answer == 'y'
   end
 
   def play
     clear
-    display_message("Welcome to Tic Tac Toe!")
+    puts "Welcome to Tic Tac Toe!"
     display_board
     loop do
       human_moves
