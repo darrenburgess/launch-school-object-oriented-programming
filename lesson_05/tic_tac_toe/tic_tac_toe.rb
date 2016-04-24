@@ -45,12 +45,11 @@ class Board
 
   def detect_winner
     WINNING_LINES.each do |line|
-      squares = @squares.select{|k,_| line.include?(k)}.values
+      squares = @squares.values_at(*line)
       return TTTGame::HUMAN_MARKER    if count_marker(TTTGame::HUMAN_MARKER, squares) == 3
       return TTTGame::COMPUTER_MARKER if count_marker(TTTGame::COMPUTER_MARKER, squares) == 3
-      nil
-      end
     end
+    nil
   end
 end
 
