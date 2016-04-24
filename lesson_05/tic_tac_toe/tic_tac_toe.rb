@@ -146,6 +146,12 @@ class TTTGame
     end
   end
 
+  def play_again?
+    puts "Do you want to play again (y or n)?"
+    answer = gets.chomp.chr
+    true if answer == "y" || answer == "Y"
+  end
+
   def play
     clear
     display_message("Welcome to Tic Tac Toe!")
@@ -159,10 +165,19 @@ class TTTGame
 
       display_board
     end
+
     display_result
-    display_message("Thanks for playing! Goodbye")
+
+    if play_again?
+      game = TTTGame.new
+      game.play
+    else
+      display_message("Thanks for playing! Goodbye")
+    end
   end
 end
 
 game = TTTGame.new
 game.play
+
+
