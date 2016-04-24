@@ -2,11 +2,15 @@ require 'pry'
 
 class Board
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
-                   [1, 4, 7], [2, 5, 8], [3, 5, 9],
+                   [1, 4, 7], [2, 5, 8], [3, 6, 9],
                    [1, 5, 9], [3, 5, 7]]
 
   def initialize
     @squares = {}
+    reset
+  end
+
+  def reset
     (1..9).each {|key| @squares[key] = Square.new}
   end
 
@@ -169,8 +173,8 @@ class TTTGame
     display_result
 
     if play_again?
-      game = TTTGame.new
-      game.play
+      board.reset
+      play
     else
       display_message("Thanks for playing! Goodbye")
     end
@@ -179,5 +183,3 @@ end
 
 game = TTTGame.new
 game.play
-
-
