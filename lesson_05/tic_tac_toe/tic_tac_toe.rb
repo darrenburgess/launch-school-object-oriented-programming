@@ -30,13 +30,27 @@ class Board
     !!detect_winner
   end
 
-  def detect_winner
+  def detect_winner_alt #original detect_winner method.  works but not as readable.
     WINNING_LINES.each do |line|
       result = line.map{|i| @squares[i].marker}.uniq
       return TTTGame::HUMAN_MARKER    if result == [TTTGame::HUMAN_MARKER] 
       return TTTGame::COMPUTER_MARKER if result == [TTTGame::COMPUTER_MARKER]
     end
     nil
+  end
+
+  def count_marker(marker, squares)
+    squares.collect(&:marker).count(marker)
+  end
+
+  def detect_winner
+    WINNING_LINES.each do |line|
+      squares = @squares.select{|k,_| line.include?(k)}.values
+      return TTTGame::HUMAN_MARKER    if count_marker(TTTGame::HUMAN_MARKER, squares) == 3
+      return TTTGame::COMPUTER_MARKER if count_marker(TTTGame::COMPUTER_MARKER, squares) == 3
+      nil
+      end
+    end
   end
 end
 
@@ -122,12 +136,13 @@ class TTTGame
 
   def display_result
     display_board
-    if board.detect_winner == HUMAN_MARKER
+
+    case board.detect_winner
+    when HUMAN_MARKER
       puts "You won"
-    elsif board.detect_winner == COMPUTER_MARKER
+    when COMPUTER_MARKER
       puts "Computer won"
     else
-      binding.pry
       puts "Draw"
     end
   end
