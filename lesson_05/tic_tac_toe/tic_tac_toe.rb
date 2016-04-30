@@ -86,17 +86,38 @@ class TTTGame
 
   COMPUTER_MARKER = "O"
   HUMAN_MARKER = "X"
+  FIRST_TO_MOVE = HUMAN_MARKER
 
   def initialize
     @board = Board.new
     @human = Player.new(HUMAN_MARKER)
     @computer = Player.new(COMPUTER_MARKER)
-    @current_player = "human"
+    @current_player = FIRST_TO_MOVE
   end
 
-  def display_message(text)
-    puts text
+  def play
+    clear
+    display_welcome_message
+    display_board
+    
+    loop do
+      loop do
+        current_player_moves
+        break if board.someone_won? || board.full?
+        clear_screen_and_display_board if human_turn?
+      end
+
+      display_result
+
+      break unless play_again?
+
+      reset_game
+    end
+
+    display_goodbye_message
   end
+
+  private
 
   def clear
     system "clear" or system "cls"
@@ -115,14 +136,12 @@ class TTTGame
   end
 
   def current_player_moves
-    binding.pry
-    if current_player == "human"
+    if self.current_player == HUMAN_MARKER 
       human_moves
-      current_player = "computer"
     else
       computer_moves
-      current_player = "computer"
     end
+    self.current_player = self.current_player == HUMAN_MARKER ? COMPUTER_MARKER : HUMAN_MARKER
   end
 
   def human_moves
@@ -159,11 +178,11 @@ class TTTGame
   end
 
   def display_goodbye_message
-    display_message("Thanks for playing! Goodbye!")
+    puts "Thanks for playing! Goodbye!"
   end
 
   def human_turn?
-    current_player == "human"
+    current_player == HUMAN_MARKER
   end
 
   def play_again?
@@ -180,29 +199,9 @@ class TTTGame
   def reset_game
     board.reset
     clear_screen_and_display_board
+    self.current_player = FIRST_TO_MOVE
   end
 
-  def play
-    clear
-    display_welcome_message
-    display_board
-    
-    loop do
-      loop do
-        current_player_moves
-        break if board.someone_won? || board.full?
-        clear_screen_and_display_board if human_turn?
-      end
-
-      display_result
-
-      break unless play_again?
-
-      reset_game
-    end
-
-    display_goodbye_message
-  end
 end
 
 game = TTTGame.new
