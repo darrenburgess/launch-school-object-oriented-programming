@@ -103,6 +103,7 @@ class TTTGame
     loop do
       loop do
         current_player_moves
+        set_next_player
         break if board.someone_won? || board.full?
         clear_screen_and_display_board if human_turn?
       end
@@ -141,6 +142,9 @@ class TTTGame
     else
       computer_moves
     end
+  end
+
+  def set_next_player
     self.current_player = self.current_player == HUMAN_MARKER ? COMPUTER_MARKER : HUMAN_MARKER
   end
 
