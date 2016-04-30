@@ -1,6 +1,8 @@
 require 'pry'
 
 class Board
+  attr_accessor :squares
+
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
                    [1, 4, 7], [2, 5, 8], [3, 6, 9],
                    [1, 5, 9], [3, 5, 7]]
@@ -14,12 +16,22 @@ class Board
     (1..9).each {|key| @squares[key] = Square.new}
   end
 
-  def get_square_at(key)
-    @squares[key]
-  end
-
   def set_square_at(key, marker)
     @squares[key].marker = marker
+  end
+
+  def draw
+    puts "     |     |"
+    puts "  #{squares[1]}  |  #{squares[2]}  |  #{squares[3]}"
+    puts "     |     |"
+    puts "-----------------"
+    puts "     |     |"
+    puts "  #{squares[4]}  |  #{squares[5]}  |  #{squares[6]}"
+    puts "     |     |"
+    puts "-----------------"
+    puts "     |     |"
+    puts "  #{squares[7]}  |  #{squares[8]}  |  #{squares[9]}"
+    puts "     |     |"
   end
 
   def unmarked_keys
@@ -105,17 +117,7 @@ class TTTGame
   def display_board
     puts "Your mark is #{human.marker}. Computer mark is #{computer.marker}."
     puts ""
-    puts "     |     |"
-    puts "  #{board.get_square_at(1)}  |  #{board.get_square_at(2)}  |  #{board.get_square_at(3)}"
-    puts "     |     |"
-    puts "-----------------"
-    puts "     |     |"
-    puts "  #{board.get_square_at(4)}  |  #{board.get_square_at(5)}  |  #{board.get_square_at(6)}"
-    puts "     |     |"
-    puts "-----------------"
-    puts "     |     |"
-    puts "  #{board.get_square_at(7)}  |  #{board.get_square_at(8)}  |  #{board.get_square_at(9)}"
-    puts "     |     |"
+    board.draw
     puts ""
   end
 
@@ -154,6 +156,14 @@ class TTTGame
     end
   end
 
+  def display_welcome_message
+    puts "Welcome to Tic Tac Toe!"
+  end
+
+  def display_goodbye_message
+    display_message("Thanks for playing! Goodbye!")
+  end
+
   def play_again?
     answer = nil
     loop do
@@ -165,32 +175,35 @@ class TTTGame
     true if answer == 'y'
   end
 
-  def display_welcome_message
-    puts "Welcome to Tic Tac Toe!"
+  def reset_game
+    board.reset
+    clear_screen_and_display_board
   end
 
   def play
     clear
     display_welcome_message
     display_board
+    
     loop do
-      human_moves
-      break if board.someone_won? || board.full?
+      loop do
+        human_moves
+        break if board.someone_won? || board.full?
 
-      computer_moves
-      break if board.someone_won? || board.full?
+        computer_moves
+        break if board.someone_won? || board.full?
 
-      clear_screen_and_display_board
+        clear_screen_and_display_board
+      end
+
+      display_result
+
+      break unless play_again?
+
+      reset_game
     end
 
-    display_result
-
-    if play_again?
-      board.reset
-      play
-    else
-      display_message("Thanks for playing! Goodbye")
-    end
+    display_goodbye_message
   end
 end
 
