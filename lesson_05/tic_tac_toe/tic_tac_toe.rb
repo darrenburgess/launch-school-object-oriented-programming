@@ -1,11 +1,12 @@
+# frozen_string_literal: true
 require 'pry'
 
-class Board
+class Board # :nodoc:
   attr_accessor :squares
 
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
                    [1, 4, 7], [2, 5, 8], [3, 6, 9],
-                   [1, 5, 9], [3, 5, 7]]
+                   [1, 5, 9], [3, 5, 7]].freeze
 
   def initialize
     @squares = {}
@@ -13,13 +14,14 @@ class Board
   end
 
   def reset
-    (1..9).each {|key| @squares[key] = Square.new}
+    (1..9).each { |key| @squares[key] = Square.new }
   end
 
   def []=(key, marker)
     @squares[key].marker = marker
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Style/StringLiterals
   def draw
     puts "     |     |"
     puts "  #{squares[1]}  |  #{squares[2]}  |  #{squares[3]}"
@@ -33,9 +35,10 @@ class Board
     puts "  #{squares[7]}  |  #{squares[8]}  |  #{squares[9]}"
     puts "     |     |"
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Style/StringLiterals
 
   def unmarked_keys
-    @squares.keys.select {|key| @squares[key].unmarked?}
+    @squares.keys.select { |key| @squares[key].unmarked? }
   end
 
   def full?
@@ -43,20 +46,20 @@ class Board
   end
 
   def someone_won?
-    !!winning_marker
+    winning_marker
   end
 
   def winning_marker
     WINNING_LINES.each do |line|
-      result = line.map{|i| @squares[i].marker}.uniq
-      return result[0] if result.size == 1 && result[0] != " "
+      result = line.map { |i| @squares[i].marker }.uniq
+      return result[0] if result.size == 1 && result[0] != ' '
     end
     nil
   end
 end
 
-class Square
-  INITIAL_MARKER = ' '
+class Square # :nodoc:
+  INITIAL_MARKER = ' '.freeze
 
   attr_accessor :marker
 
@@ -73,7 +76,7 @@ class Square
   end
 end
 
-class Player
+class Player # :nodoc:
   attr_reader :marker
 
   def initialize(marker)
@@ -81,12 +84,12 @@ class Player
   end
 end
 
-class TTTGame
+class TTTGame # :nodoc:
   attr_accessor :board, :human, :computer, :current_player
 
-  COMPUTER_MARKER = "O"
-  HUMAN_MARKER = "X"
-  FIRST_TO_MOVE = HUMAN_MARKER
+  COMPUTER_MARKER = 'O'.freeze
+  HUMAN_MARKER = 'X'.freeze
+  FIRST_TO_MOVE = HUMAN_MARKER.freeze
 
   def initialize
     @board = Board.new
@@ -121,14 +124,14 @@ class TTTGame
   private
 
   def clear
-    system "clear" or system "cls"
+    system 'clear' or system 'cls'
   end
 
   def display_board
     puts "Your mark is #{human.marker}. Computer mark is #{computer.marker}."
-    puts ""
+    puts ''
     board.draw
-    puts ""
+    puts ''
   end
 
   def clear_screen_and_display_board
@@ -137,7 +140,7 @@ class TTTGame
   end
 
   def current_player_moves
-    if self.current_player == HUMAN_MARKER 
+    if current_player == HUMAN_MARKER
       human_moves
     else
       computer_moves
@@ -145,11 +148,11 @@ class TTTGame
   end
 
   def set_next_player
-    self.current_player = self.current_player == HUMAN_MARKER ? COMPUTER_MARKER : HUMAN_MARKER
+    self.current_player = current_player == HUMAN_MARKER ? COMPUTER_MARKER : HUMAN_MARKER
   end
 
   def human_moves
-    puts "Choose a square: #{board.unmarked_keys.join(", ")}"
+    puts "Choose a square: #{board.unmarked_keys.join(', ')}"
     square = nil
     loop do
       square = gets.chomp.to_i
@@ -169,20 +172,20 @@ class TTTGame
 
     case board.winning_marker
     when HUMAN_MARKER
-      puts "You won"
+      puts 'You won'
     when COMPUTER_MARKER
-      puts "Computer won"
+      puts 'Computer won'
     else
-      puts "Draw"
+      puts 'Draw'
     end
   end
 
   def display_welcome_message
-    puts "Welcome to Tic Tac Toe!"
+    puts 'Welcome to Tic Tac Toe!'
   end
 
   def display_goodbye_message
-    puts "Thanks for playing! Goodbye!"
+    puts 'Thanks for playing! Goodbye!'
   end
 
   def human_turn?
@@ -192,10 +195,10 @@ class TTTGame
   def play_again?
     answer = nil
     loop do
-      puts "Do you want to play again (y or n)?"
+      puts 'Do you want to play again (y or n)?'
       answer = gets.chomp.downcase
       break if %w(y n).include? answer
-      puts "Answer must by y or n"
+      puts 'Answer must by y or n'
     end
     true if answer == 'y'
   end
@@ -205,7 +208,6 @@ class TTTGame
     clear_screen_and_display_board
     self.current_player = FIRST_TO_MOVE
   end
-
 end
 
 game = TTTGame.new
