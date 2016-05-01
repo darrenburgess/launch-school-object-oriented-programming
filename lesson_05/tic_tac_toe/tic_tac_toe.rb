@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 require 'pry'
 
+class Array
+  def joinor
+    self[-1] = " or #{self.last}" if self.size > 1
+    self.join(', ')
+  end
+end
+
 class Board # :nodoc:
   attr_accessor :squares
 
@@ -146,7 +153,7 @@ class TTTGame # :nodoc:
 
   def set_next_player
     self.current_player = case current_player
-                          when HUMAN_MARKER
+                          when HUMAN_MARKER 
                             COMPUTER_MARKER
                           else
                             HUMAN_MARKER
@@ -154,7 +161,7 @@ class TTTGame # :nodoc:
   end
 
   def human_moves
-    puts "Choose a square: #{board.unmarked_keys.join(', ')}"
+    puts "Choose a square: #{board.unmarked_keys.joinor}"
     square = nil
     loop do
       square = gets.chomp.to_i
