@@ -63,7 +63,7 @@ class Square # :nodoc:
 
   attr_accessor :marker
 
-  def initialize(marker=INITIAL_MARKER)
+  def initialize(marker = INITIAL_MARKER)
     @marker = marker
   end
 
@@ -98,33 +98,33 @@ class TTTGame # :nodoc:
     @current_player = FIRST_TO_MOVE
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def play
     clear
     display_welcome_message
     display_board
-    
+
     loop do
       loop do
         current_player_moves
         set_next_player
         break if board.someone_won? || board.full?
-        clear_screen_and_display_board if human_turn?
+        clear_screen_and_display_board
       end
 
       display_result
-
       break unless play_again?
-
       reset_game
     end
 
     display_goodbye_message
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   private
 
   def clear
-    system 'clear' or system 'cls'
+    system('clear') or system('cls')
   end
 
   def display_board
@@ -140,15 +140,17 @@ class TTTGame # :nodoc:
   end
 
   def current_player_moves
-    if current_player == HUMAN_MARKER
-      human_moves
-    else
-      computer_moves
-    end
+    human_moves    if current_player == HUMAN_MARKER
+    computer_moves if current_player == COMPUTER_MARKER
   end
 
   def set_next_player
-    self.current_player = current_player == HUMAN_MARKER ? COMPUTER_MARKER : HUMAN_MARKER
+    self.current_player = case current_player
+                          when HUMAN_MARKER
+                            COMPUTER_MARKER
+                          else
+                            HUMAN_MARKER
+                          end
   end
 
   def human_moves
