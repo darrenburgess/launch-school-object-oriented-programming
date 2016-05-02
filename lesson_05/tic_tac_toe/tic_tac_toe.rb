@@ -84,10 +84,16 @@ class Square # :nodoc:
 end
 
 class Player # :nodoc:
+  attr_accessor :score
   attr_reader :marker
 
   def initialize(marker)
     @marker = marker
+    @score = 0
+  end
+
+  def set_score
+    @score +=1
   end
 end
 
@@ -120,6 +126,9 @@ class TTTGame # :nodoc:
       end
 
       display_result
+      increment_score
+      binding.pry
+ 
       break unless play_again?
       reset_game
     end
@@ -186,6 +195,14 @@ class TTTGame # :nodoc:
       puts 'Computer won'
     else
       puts 'Draw'
+    end
+  end
+
+  def increment_score 
+    if board.winning_marker == HUMAN_MARKER
+      human.set_score
+    elsif board.winning_marker == COMPUTER_MARKER
+      computer.set_score
     end
   end
 
