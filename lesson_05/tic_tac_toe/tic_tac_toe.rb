@@ -84,16 +84,38 @@ class Square # :nodoc:
 end
 
 class Player # :nodoc:
-  attr_accessor :score
+  attr_accessor :score, :name
   attr_reader :marker
+
+  ROBOTS = %w(HAL9000 Terminator C3PO R2D2)
 
   def initialize(marker)
     @marker = marker
     @score = 0
+    get_name
+    binding.pry
   end
 
   def set_score
     @score +=1
+  end
+
+  def human?
+    marker == "X"
+  end
+
+  def get_name
+    if human?
+      puts 'Enter your name:'
+      answer = nil
+      loop do
+        answer = gets.chomp.strip
+        break if answer 
+      end
+      self.name = answer
+    else
+      self.name = ROBOTS.sample
+    end
   end
 end
 
