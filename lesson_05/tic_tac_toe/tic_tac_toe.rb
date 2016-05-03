@@ -93,7 +93,6 @@ class Player # :nodoc:
     @marker = marker
     @score = 0
     get_name
-    binding.pry
   end
 
   def set_score
@@ -128,6 +127,8 @@ class TTTGame # :nodoc:
   HIGH_SCORE = 3
 
   def initialize
+    clear
+    display_welcome_message
     @board = Board.new
     @human = Player.new(HUMAN_MARKER)
     @computer = Player.new(COMPUTER_MARKER)
@@ -168,7 +169,8 @@ class TTTGame # :nodoc:
   end
 
   def display_board
-    puts "Your mark is #{human.marker}. Computer mark is #{computer.marker}."
+    puts "#{human.name}'s mark is #{human.marker}. #{computer.name}'s mark is #{computer.marker}."
+
     puts ''
     board.draw
     puts ''
@@ -180,7 +182,7 @@ class TTTGame # :nodoc:
   end
 
   def display_score
-    puts "Human: #{human.score}. Computer: #{computer.score}"
+    puts "#{human.name}: #{human.score}. #{computer.name}: #{computer.score}"
   end
 
   def current_player_moves
@@ -218,9 +220,9 @@ class TTTGame # :nodoc:
 
     case board.winning_marker
     when HUMAN_MARKER
-      puts 'You won'
+      puts "#{human.name} won"
     when COMPUTER_MARKER
-      puts 'Computer won'
+      puts "#{computer.name} won"
     else
       puts 'Draw'
     end
@@ -243,7 +245,7 @@ class TTTGame # :nodoc:
   end
 
   def display_goodbye_message
-    puts "Final Score - Human: #{human.score} Computer: #{computer.score}"
+    puts "Final Score - #{human.name}: #{human.score} #{computer.name}: #{computer.score}"
     puts 'Thanks for playing! Goodbye!'
   end
 
