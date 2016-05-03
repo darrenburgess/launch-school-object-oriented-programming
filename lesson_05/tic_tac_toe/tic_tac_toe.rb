@@ -92,7 +92,6 @@ class Player # :nodoc:
   def initialize(marker)
     @marker = marker
     @score = 0
-    get_name
   end
 
   def set_score
@@ -103,19 +102,19 @@ class Player # :nodoc:
     marker == "X"
   end
 
-  def get_name
-    if human?
-      puts 'Enter your name:'
-      answer = nil
-      loop do
-        answer = gets.chomp.strip
-        break if answer 
-      end
-      self.name = answer
-    else
-      self.name = ROBOTS.sample
+  def get_human_name
+    puts 'Enter your name:'
+    answer = nil
+    loop do
+      answer = gets.chomp.strip
+      break if answer 
     end
+    self.name = answer
   end
+
+  def get_computer_name
+    self.name = ROBOTS.sample
+  end  
 end
 
 class TTTGame # :nodoc:
@@ -133,6 +132,8 @@ class TTTGame # :nodoc:
     @human = Player.new(HUMAN_MARKER)
     @computer = Player.new(COMPUTER_MARKER)
     @current_player = FIRST_TO_MOVE
+    human.get_human_name
+    computer.get_computer_name
   end
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
@@ -170,7 +171,6 @@ class TTTGame # :nodoc:
 
   def display_board
     puts "#{human.name}'s mark is #{human.marker}. #{computer.name}'s mark is #{computer.marker}."
-
     puts ''
     board.draw
     puts ''
