@@ -103,6 +103,7 @@ class TTTGame # :nodoc:
   COMPUTER_MARKER = 'O'.freeze
   HUMAN_MARKER = 'X'.freeze
   FIRST_TO_MOVE = HUMAN_MARKER.freeze
+  HIGH_SCORE = 3
 
   def initialize
     @board = Board.new
@@ -127,7 +128,8 @@ class TTTGame # :nodoc:
 
       display_result
       increment_score
-      binding.pry
+      display_score
+      break if overall_winner?
  
       break unless play_again?
       reset_game
@@ -153,6 +155,10 @@ class TTTGame # :nodoc:
   def clear_screen_and_display_board
     clear
     display_board
+  end
+
+  def display_score
+    puts "Human: #{human.score}. Computer: #{computer.score}"
   end
 
   def current_player_moves
@@ -206,11 +212,16 @@ class TTTGame # :nodoc:
     end
   end
 
+  def overall_winner?
+    human.score == HIGH_SCORE || computer.score == HIGH_SCORE 
+  end
+
   def display_welcome_message
     puts 'Welcome to Tic Tac Toe!'
   end
 
   def display_goodbye_message
+    puts "Final Score - Human: #{human.score} Computer: #{computer.score}"
     puts 'Thanks for playing! Goodbye!'
   end
 
