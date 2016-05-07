@@ -84,22 +84,16 @@ class Square # :nodoc:
 end
 
 class Player # :nodoc:
-  attr_accessor :score, :name
-  attr_reader :marker
+  attr_accessor :score, :name, :marker
 
   ROBOTS = %w(HAL9000 Terminator C3PO R2D2)
 
-  def initialize(marker)
-    @marker = marker
+  def initialize
     @score = 0
   end
 
   def set_score
     @score +=1
-  end
-
-  def human?
-    marker == "X"
   end
 
   def get_human_name
@@ -120,20 +114,30 @@ end
 class TTTGame # :nodoc:
   attr_accessor :board, :human, :computer, :current_player
 
-  COMPUTER_MARKER = 'O'.freeze
-  HUMAN_MARKER = 'X'.freeze
-  FIRST_TO_MOVE = HUMAN_MARKER.freeze
+  FIRST_TO_MOVE = "X"
   HIGH_SCORE = 3
 
   def initialize
     clear
     display_welcome_message
     @board = Board.new
-    @human = Player.new(HUMAN_MARKER)
-    @computer = Player.new(COMPUTER_MARKER)
-    @current_player = FIRST_TO_MOVE
+    @human = Player.new
+    @computer = Player.new
     human.get_human_name
     computer.get_computer_name
+    set_player_markers
+    @current_player = FIRST_TO_MOVE
+  end
+
+  def set_player_markers
+    puts 'Choose a marker:'
+    answer = nil
+    loop do
+      answer = gets.chomp.strip.chr.upcase
+      break if %w(X O).include? answer
+    end
+    human.marker = answer
+    computer.marker = human.marker == "X" ? "O" : "X"
   end
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
@@ -186,16 +190,16 @@ class TTTGame # :nodoc:
   end
 
   def current_player_moves
-    human_moves    if current_player == HUMAN_MARKER
-    computer_moves if current_player == COMPUTER_MARKER
+    human_moves    if current_player == human.marker
+    computer_moves if current_player == computer.marker
   end
 
   def set_next_player
     self.current_player = case current_player
-                          when HUMAN_MARKER 
-                            COMPUTER_MARKER
+                          when human.marker 
+                            computer.marker
                           else
-                            HUMAN_MARKER
+                            human.marker
                           end
   end
 
@@ -219,9 +223,9 @@ class TTTGame # :nodoc:
     clear_screen_and_display_board
 
     case board.winning_marker
-    when HUMAN_MARKER
+    when human.marker
       puts "#{human.name} won"
-    when COMPUTER_MARKER
+    when computer.marker
       puts "#{computer.name} won"
     else
       puts 'Draw'
@@ -229,9 +233,9 @@ class TTTGame # :nodoc:
   end
 
   def increment_score 
-    if board.winning_marker == HUMAN_MARKER
+    if board.winning_marker == human.marker
       human.set_score
-    elsif board.winning_marker == COMPUTER_MARKER
+    elsif board.winning_marker == computer.marker
       computer.set_score
     end
   end
@@ -250,7 +254,7 @@ class TTTGame # :nodoc:
   end
 
   def human_turn?
-    current_player == HUMAN_MARKER
+    current_player == human.marker
   end
 
   def play_again?
