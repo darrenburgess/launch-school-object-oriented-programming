@@ -59,7 +59,7 @@ class Board # :nodoc:
   def winning_marker
     WINNING_LINES.each do |line|
       result = line.map { |i| @squares[i].marker }.uniq
-      return result[0] if result.size == 1 && result[0] != ' '
+      return result[0] if result.size == 1 && result[0] != Square::INITIAL_MARKER 
     end
     nil
   end
@@ -111,9 +111,41 @@ class Player # :nodoc:
   end  
 end
 
+module ArtificialIntelligence
+  def find_strategic_square
+    Board::WINNING_LINES.each do |line|
+      result = board.squares.values_at(*line).collect(&:marker)
+      if result.count(computer.marker) == 2 && result.include?(Square::INITIAL_MARKER)
+        return line[result.index(Square::INITIAL_MARKER)]
+      end
+    end
+
+    Board::WINNING_LINES.each do |line|
+      result = board.squares.values_at(*line).collect(&:marker)
+      if result.count(human.marker) == 2 && result.include?(Square::INITIAL_MARKER)
+        return line[result.index(Square::INITIAL_MARKER)]
+      end
+    end
+    nil
+  end
+end
+
+module Messages
+  def display_welcome_message
+    puts 'Welcome to Tic Tac Toe!'
+  end
+
+  def display_goodbye_message
+    puts "Final Score - #{human.name}: #{human.score} #{computer.name}: #{computer.score}"
+    puts 'Thanks for playing! Goodbye!'
+  end
+end
+
 class TTTGame # :nodoc:
   attr_accessor :board, :human, :computer, :current_player
-
+  include Messages
+  include ArtificialIntelligence
+  
   FIRST_TO_MOVE = "X"
   HIGH_SCORE = 3
 
@@ -130,9 +162,9 @@ class TTTGame # :nodoc:
   end
 
   def set_player_markers
-    puts 'Choose a marker:'
     answer = nil
     loop do
+      puts 'Choose a marker (X or O):'
       answer = gets.chomp.strip.chr.upcase
       break if %w(X O).include? answer
     end
@@ -215,7 +247,15 @@ class TTTGame # :nodoc:
   end
 
   def computer_moves
-    square = board.unmarked_keys.sample
+    square = if find_strategic_square
+               find_strategic_square
+             elsif board.squares[5].marker == Square::INITIAL_MARKER 
+               5
+             elsif board.squares[5] == human.marker && board.unmarked_keys.length == 8
+               [1, 3, 7, 9].sample
+             else
+               board.unmarked_keys.sample
+             end
     board[square] = computer.marker
   end
 
@@ -242,15 +282,6 @@ class TTTGame # :nodoc:
 
   def overall_winner?
     human.score == HIGH_SCORE || computer.score == HIGH_SCORE 
-  end
-
-  def display_welcome_message
-    puts 'Welcome to Tic Tac Toe!'
-  end
-
-  def display_goodbye_message
-    puts "Final Score - #{human.name}: #{human.score} #{computer.name}: #{computer.score}"
-    puts 'Thanks for playing! Goodbye!'
   end
 
   def human_turn?
