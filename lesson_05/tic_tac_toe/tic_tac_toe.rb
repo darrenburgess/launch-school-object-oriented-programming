@@ -112,15 +112,6 @@ class Player # :nodoc:
 end
 
 module ArtificialIntelligence
-  def find_strategic_square(mark)
-    Board::WINNING_LINES.each do |line|
-      result = board.squares.values_at(*line).collect(&:marker)
-      if result.count(mark) == 2 && result.include?(Square::INITIAL_MARKER)
-        return line[result.index(Square::INITIAL_MARKER)]
-      end
-    end
-    nil
-  end
 end
 
 module Messages
@@ -137,7 +128,6 @@ end
 class TTTGame # :nodoc:
   attr_accessor :board, :human, :computer, :current_player
   include Messages
-  include ArtificialIntelligence
   
   FIRST_TO_MOVE = "X"
   HIGH_SCORE = 3
@@ -239,8 +229,17 @@ class TTTGame # :nodoc:
     board[square] = human.marker
   end
 
+  def find_strategic_square(mark)
+    Board::WINNING_LINES.each do |line|
+      result = board.squares.values_at(*line).collect(&:marker)
+      if result.count(mark) == 2 && result.include?(Square::INITIAL_MARKER)
+        return line[result.index(Square::INITIAL_MARKER)]
+      end
+    end
+    nil
+  end
+
   def computer_moves
-    binding.pry
     square = if find_strategic_square(computer.marker)
                find_strategic_square(computer.marker)
              elsif find_strategic_square(human.marker)
