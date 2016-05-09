@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 require 'pry'
 
-class Array
+class Array # :nodoc:
   def joinor
-    self[-1] = " or #{self.last}" if self.size > 1
-    self.join(', ')
+    self[-1] = " or #{last}" if size > 1
+    join(', ')
   end
 end
 
@@ -59,7 +59,8 @@ class Board # :nodoc:
   def winning_marker
     WINNING_LINES.each do |line|
       result = line.map { |i| @squares[i].marker }.uniq
-      return result[0] if result.size == 1 && result[0] != Square::INITIAL_MARKER 
+      return result[0] if result.size == 1 &&
+                          result[0] != Square::INITIAL_MARKER
     end
     nil
   end
@@ -86,41 +87,40 @@ end
 class Player # :nodoc:
   attr_accessor :score, :name, :marker
 
-  ROBOTS = %w(HAL9000 Terminator C3PO R2D2)
+  ROBOTS = %w(HAL9000 Terminator C3PO R2D2).freeze
 
   def initialize
     @score = 0
   end
 
   def set_score
-    @score +=1
+    @score += 1
   end
 
-  def get_human_name
+  def set_human_name
     puts 'Enter your name:'
     answer = nil
     loop do
       answer = gets.chomp.strip
-      break if answer 
+      break if answer
     end
     self.name = answer
   end
 
-  def get_computer_name
+  def set_computer_name
     self.name = ROBOTS.sample
-  end  
+  end
 end
 
-module ArtificialIntelligence
-end
-
-module Messages
+module Messages # :nodoc:
   def display_welcome_message
     puts 'Welcome to Tic Tac Toe!'
   end
 
   def display_goodbye_message
-    puts "Final Score - #{human.name}: #{human.score} #{computer.name}: #{computer.score}"
+    puts 'Final Score:'
+    puts "  #{human.name}: #{human.score}"
+    puts "  #{computer.name}: #{computer.score}"
     puts 'Thanks for playing! Goodbye!'
   end
 end
@@ -128,8 +128,8 @@ end
 class TTTGame # :nodoc:
   attr_accessor :board, :human, :computer, :current_player
   include Messages
-  
-  FIRST_TO_MOVE = "X"
+
+  FIRST_TO_MOVE = 'X'.freeze
   HIGH_SCORE = 3
 
   def initialize
@@ -138,8 +138,8 @@ class TTTGame # :nodoc:
     @board = Board.new
     @human = Player.new
     @computer = Player.new
-    human.get_human_name
-    computer.get_computer_name
+    human.set_human_name
+    computer.set_computer_name
     set_player_markers
     @current_player = FIRST_TO_MOVE
   end
@@ -152,7 +152,7 @@ class TTTGame # :nodoc:
       break if %w(X O).include? answer
     end
     human.marker = answer
-    computer.marker = human.marker == "X" ? "O" : "X"
+    computer.marker = human.marker == 'X' ? 'O' : 'X'
   end
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
@@ -173,7 +173,7 @@ class TTTGame # :nodoc:
       increment_score
       display_score
       break if overall_winner?
- 
+
       break unless play_again?
       reset_game
     end
@@ -189,7 +189,8 @@ class TTTGame # :nodoc:
   end
 
   def display_board
-    puts "#{human.name}'s mark is #{human.marker}. #{computer.name}'s mark is #{computer.marker}."
+    puts "#{human.name}'s mark is #{human.marker}."
+    puts "#{computer.name}'s mark is #{computer.marker}."
     puts ''
     board.draw
     puts ''
@@ -211,7 +212,7 @@ class TTTGame # :nodoc:
 
   def set_next_player
     self.current_player = case current_player
-                          when human.marker 
+                          when human.marker
                             computer.marker
                           else
                             human.marker
@@ -244,9 +245,10 @@ class TTTGame # :nodoc:
                find_strategic_square(computer.marker)
              elsif find_strategic_square(human.marker)
                find_strategic_square(human.marker)
-             elsif board.squares[5].marker == Square::INITIAL_MARKER 
+             elsif board.squares[5].marker == Square::INITIAL_MARKER
                5
-             elsif board.squares[5].marker == human.marker && board.unmarked_keys.length == 8
+             elsif board.squares[5].marker == human.marker &&
+                   board.unmarked_keys.length == 8
                [1, 3, 7, 9].sample
              else
                board.unmarked_keys.sample
@@ -267,7 +269,7 @@ class TTTGame # :nodoc:
     end
   end
 
-  def increment_score 
+  def increment_score
     if board.winning_marker == human.marker
       human.set_score
     elsif board.winning_marker == computer.marker
@@ -276,7 +278,7 @@ class TTTGame # :nodoc:
   end
 
   def overall_winner?
-    human.score == HIGH_SCORE || computer.score == HIGH_SCORE 
+    human.score == HIGH_SCORE || computer.score == HIGH_SCORE
   end
 
   def human_turn?
