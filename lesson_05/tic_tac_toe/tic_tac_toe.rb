@@ -112,17 +112,10 @@ class Player # :nodoc:
 end
 
 module ArtificialIntelligence
-  def find_strategic_square
+  def find_strategic_square(mark)
     Board::WINNING_LINES.each do |line|
       result = board.squares.values_at(*line).collect(&:marker)
-      if result.count(computer.marker) == 2 && result.include?(Square::INITIAL_MARKER)
-        return line[result.index(Square::INITIAL_MARKER)]
-      end
-    end
-
-    Board::WINNING_LINES.each do |line|
-      result = board.squares.values_at(*line).collect(&:marker)
-      if result.count(human.marker) == 2 && result.include?(Square::INITIAL_MARKER)
+      if result.count(mark) == 2 && result.include?(Square::INITIAL_MARKER)
         return line[result.index(Square::INITIAL_MARKER)]
       end
     end
@@ -247,11 +240,14 @@ class TTTGame # :nodoc:
   end
 
   def computer_moves
-    square = if find_strategic_square
-               find_strategic_square
+    binding.pry
+    square = if find_strategic_square(computer.marker)
+               find_strategic_square(computer.marker)
+             elsif find_strategic_square(human.marker)
+               find_strategic_square(human.marker)
              elsif board.squares[5].marker == Square::INITIAL_MARKER 
                5
-             elsif board.squares[5] == human.marker && board.unmarked_keys.length == 8
+             elsif board.squares[5].marker == human.marker && board.unmarked_keys.length == 8
                [1, 3, 7, 9].sample
              else
                board.unmarked_keys.sample
