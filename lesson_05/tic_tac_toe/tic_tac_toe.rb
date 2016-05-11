@@ -2,11 +2,18 @@
 require 'pry'
 
 class Array # :nodoc:
-  def joinor
-    self[-1] = " or #{last}" if size > 1
-    join(', ')
+end
+
+module Arr # :nodoc:
+  refine Array do
+    def joinor
+      self[-1] = " or #{last}" if size > 1
+      join(', ')
+    end
   end
 end
+
+using Arr
 
 class Board # :nodoc:
   attr_accessor :squares
@@ -58,9 +65,10 @@ class Board # :nodoc:
 
   def winning_marker
     WINNING_LINES.each do |line|
-      result = line.map { |i| @squares[i].marker }.uniq
-      return result[0] if result.size == 1 &&
-                          result[0] != Square::INITIAL_MARKER
+      result = line.map { |key| @squares[key].marker }.uniq
+      if result.size == 1 && result[0] != Square::INITIAL_MARKER
+        return result[0]
+      end
     end
     nil
   end
@@ -93,7 +101,7 @@ class Player # :nodoc:
     @score = 0
   end
 
-  def set_score
+  def increment_score
     @score += 1
   end
 
@@ -172,9 +180,8 @@ class TTTGame # :nodoc:
       display_result
       increment_score
       display_score
-      break if overall_winner?
-
-      break unless play_again?
+      break if overall_winner? || !play_again?
+      
       reset_game
     end
 
@@ -271,9 +278,9 @@ class TTTGame # :nodoc:
 
   def increment_score
     if board.winning_marker == human.marker
-      human.set_score
+      human.increment_score
     elsif board.winning_marker == computer.marker
-      computer.set_score
+      computer.increment_score
     end
   end
 
@@ -293,7 +300,7 @@ class TTTGame # :nodoc:
       break if %w(y n).include? answer
       puts 'Answer must by y or n'
     end
-    true if answer == 'y'
+    answer == 'y'
   end
 
   def reset_game
