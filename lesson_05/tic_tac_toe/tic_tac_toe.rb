@@ -37,6 +37,7 @@ class Board # :nodoc:
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Style/StringLiterals
   def draw
+    binding.pry
     puts "     |     |"
     puts "  #{squares[1]}  |  #{squares[2]}  |  #{squares[3]}"
     puts "     |     |"
