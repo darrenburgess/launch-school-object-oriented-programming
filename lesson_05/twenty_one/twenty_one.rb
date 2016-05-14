@@ -108,21 +108,32 @@ end
 
 class Deck
   attr_reader :suits, :values
-  attr_accessor :deck
+  attr_accessor :deck, :cards
 
   NUMBER_OF_DECKS = 2
   SUITS  = %w(Hearts Clubs Spades Diamonds).freeze
-  VALUES = %w(Ace King Queen Jack 10 9 8 7 6 5 4 3 2).freeze
+  TYPES = %w(Ace King Queen Jack 10 9 8 7 6 5 4 3 2).freeze
 
   def initialize
+    @deck = {}
+    @cards = []
+    create_cards
+    build_deck
   end
 
-  def generate
-    deck = []
+  def create_cards
+    suits = SUITS * 2
     NUMBER_OF_DECKS.times do
-      deck.push(values.product suits)
+      @cards = TYPES.product suits
     end
-    deck.shuffle!
+    @cards.shuffle!
+  end
+
+  def build_deck
+    cards.each_with_index do |card, key|
+      @deck[key] = Card.new(card[0], card[1])
+    end
+    binding.pry
   end
 
   def deal
@@ -148,3 +159,7 @@ card = Card.new 'Hearts','Ace'
 puts card.suit
 puts card.type
 puts card.value
+
+deck = Deck.new
+deck.build_deck
+  
