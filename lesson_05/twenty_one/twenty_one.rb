@@ -57,10 +57,7 @@ class Participant
   attr_accessor :hand
 
   def initialize
-    @hand
-  end
-
-  def hit
+    @hand = []
   end
 
   def stick
@@ -77,7 +74,16 @@ class Player < Participant
   attr_accessor :stash
 
   def initialize
-    @stash
+    super
+    @stash = nil
+  end
+
+  def display_cards
+    puts "Player's hand:"
+    hand.each do |card|
+      puts card.to_s
+    end
+    puts ''
   end
 
   def place_bet
@@ -88,7 +94,28 @@ class Player < Participant
 end
 
 class Dealer < Participant
+  attr_accessor :hidden
+
   def initialize
+    @hidden = true
+    super
+  end
+
+  def display_cards
+    puts "Dealer's hand:"
+    hand.each do |card|
+      if hide_card?
+        puts "-- hole card --"
+        @hidden = false
+      else
+        puts card.to_s
+      end
+    end
+    puts ''
+  end
+
+  def hide_card?
+    hidden
   end
 
   def stick
@@ -98,7 +125,7 @@ end
 class Card
   attr_accessor :suit, :rank, :value
 
-  NUMBERS = %w(2, 3, 4, 5, 6, 7, 8, 9, 10).freeze
+  NUMBERS = %w(2 3 4 5 6 7 8 9 10).freeze
   FACE_CARDS = %w(King Queen Jack).freeze
 
   def initialize rank, suit 
@@ -112,22 +139,26 @@ class Card
       rank.to_i
     elsif FACE_CARDS.include? rank
       10
-    elsif rank == 'Ace'
+    else
       11
     end
+  end
+
+  def to_s
+    "#{rank} of #{suit}"
   end
 end
 
 class Deck
-  attr_reader :suits, :values
-  attr_accessor :deck, :cards
+  attr_accessor :deck, :cards, :card_stack
 
   NUMBER_OF_DECKS = 2
   SUITS  = %w(Hearts Clubs Spades Diamonds).freeze
   RANKS = %w(Ace King Queen Jack 10 9 8 7 6 5 4 3 2).freeze
 
   def initialize
-    @deck = {}
+    @deck = []
+    @card_stack = []
     @cards = []
     create_cards
     build_deck
@@ -136,35 +167,55 @@ class Deck
   def create_cards
     suits = SUITS * 2
     NUMBER_OF_DECKS.times do
-      @cards = RANKS.product suits
+      @card_stack = RANKS.product suits
     end
-    @cards.shuffle!
+    @card_stack.shuffle!
   end
 
   def build_deck
-    cards.each_with_index do |card, key|
-      @deck[key] = Card.new(card[0], card[1])
+    card_stack.each_with_index do |card, key|
+      cards[key] = Card.new(card[0], card[1])
     end
-  end
-
-  def deal
   end
 end
 
 class Game
-  attr_accessor
+  attr_accessor :deck, :dealer, :player
 
   include Setup
   include Messaging
 
+
   def initialize
+    @deck = Deck.new
+    @player = Player.new
+    @dealer = Dealer.new
+  end
+
+  def hit(participant)
+    participant.hand << deck.cards.pop
+  end
+
+  def deal
+    2.times do
+      hit(player)
+      hit(dealer)
+    end
+  end
+
+  def display_cards
+    player.display_cards
+    dealer.display_cards
+    binding.pry
   end
 
   def play 
-    get_player_count
-    get_player_names
+    deal
+    display_cards
+    player_turn
+    dealer_turn
   end
 end
 
-deck = Deck.new
-binding.pry
+game = Game.new
+game.play
