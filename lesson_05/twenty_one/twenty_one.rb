@@ -2,9 +2,25 @@ require 'pry'
 
 module Setup
   def get_player_count
+    display 'Enter the number of players (1-4)'
+    answer = nil
+    loop do
+      answer = gets.chomp.to_i
+      break if (1-4).include? answer
+    end
+    answer
   end
 
   def get_player_names
+    number_players.times do |player|
+      display "Enter the name of player #{player}"
+      name = nil
+      loop do
+        name = gets.chomp
+        break if name
+      end
+      # create a new player object in a player array
+    end
   end
 end
 
@@ -80,27 +96,23 @@ class Dealer < Participant
 end
 
 class Card
-  attr_accessor :suit, :type, :value
+  attr_accessor :suit, :rank, :value
 
   NUMBERS = %w(2, 3, 4, 5, 6, 7, 8, 9, 10).freeze
   FACE_CARDS = %w(King Queen Jack).freeze
 
-  def initialize suit, type
+  def initialize rank, suit 
+    @rank = rank
     @suit = suit
-    @type = type
-    @value = value
+    @value = get_value
   end
 
-  def display_value
-    @value
-  end
-
-  def value
-    if NUMBERS.include? type 
-      card.to_i
-    elsif FACE_CARDS.include? type
+  def get_value
+    if NUMBERS.include? rank
+      rank.to_i
+    elsif FACE_CARDS.include? rank
       10
-    elsif type == 'Ace'
+    elsif rank == 'Ace'
       11
     end
   end
@@ -112,7 +124,7 @@ class Deck
 
   NUMBER_OF_DECKS = 2
   SUITS  = %w(Hearts Clubs Spades Diamonds).freeze
-  TYPES = %w(Ace King Queen Jack 10 9 8 7 6 5 4 3 2).freeze
+  RANKS = %w(Ace King Queen Jack 10 9 8 7 6 5 4 3 2).freeze
 
   def initialize
     @deck = {}
@@ -124,7 +136,7 @@ class Deck
   def create_cards
     suits = SUITS * 2
     NUMBER_OF_DECKS.times do
-      @cards = TYPES.product suits
+      @cards = RANKS.product suits
     end
     @cards.shuffle!
   end
@@ -133,7 +145,6 @@ class Deck
     cards.each_with_index do |card, key|
       @deck[key] = Card.new(card[0], card[1])
     end
-    binding.pry
   end
 
   def deal
@@ -143,23 +154,17 @@ end
 class Game
   attr_accessor
 
+  include Setup
+  include Messaging
+
   def initialize
   end
 
-  def start
-    deal_cards
-    show_initial_cards
-    player_turn
-    dealer_turn
-    show_result
+  def play 
+    get_player_count
+    get_player_names
   end
 end
 
-card = Card.new 'Hearts','Ace' 
-puts card.suit
-puts card.type
-puts card.value
-
 deck = Deck.new
-deck.build_deck
-  
+binding.pry
