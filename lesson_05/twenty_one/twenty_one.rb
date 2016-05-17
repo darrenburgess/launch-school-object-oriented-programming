@@ -1,29 +1,5 @@
 require 'pry'
 
-module Setup
-  def get_player_count
-    display 'Enter the number of players (1-4)'
-    answer = nil
-    loop do
-      answer = gets.chomp.to_i
-      break if (1-4).include? answer
-    end
-    answer
-  end
-
-  def get_player_names
-    number_players.times do |player|
-      display "Enter the name of player #{player}"
-      name = nil
-      loop do
-        name = gets.chomp
-        break if name
-      end
-      # create a new player object in a player array
-    end
-  end
-end
-
 module UserInterface
   def clear
     system 'clear' or system 'cls'
@@ -142,7 +118,7 @@ class Dealer < Participant
   end
 
   def hide 
-    hidden = true
+    @hidden = true
   end
 end
 
