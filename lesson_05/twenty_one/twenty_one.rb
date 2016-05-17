@@ -1,6 +1,6 @@
 require 'pry'
 
-module UserInterface # :nodoc:
+module UserInterface # :nodoc: 
   def clear
     system('clear') || system('cls')
   end
@@ -14,7 +14,7 @@ module UserInterface # :nodoc:
   end
 end
 
-module Strategy # :nodoc:
+module Strategy # :nodoc: 
   @chart = 'create a hash of 2 deck strategy chart'
   # http://www.blackjackchamp.com/strategy/2-deck-chart/
 
@@ -22,7 +22,7 @@ module Strategy # :nodoc:
   end
 end
 
-class Participant # :nodoc:
+class Participant # :nodoc: 
   attr_accessor :hand, :score
 
   include UserInterface
@@ -57,7 +57,7 @@ class Participant # :nodoc:
   end
 end
 
-class Player < Participant # :nodoc:
+class Player < Participant # :nodoc: 
   attr_accessor :bank_roll
 
   def initialize
@@ -90,7 +90,7 @@ class Player < Participant # :nodoc:
   end
 end
 
-class Dealer < Participant # :nodoc:
+class Dealer < Participant # :nodoc: 
   attr_accessor :hidden
 
   STICKS = 17
@@ -126,7 +126,7 @@ class Dealer < Participant # :nodoc:
   end
 end
 
-class Card # :nodoc:
+class Card # :nodoc: 
   attr_accessor :suit, :rank, :value
 
   NUMBERS = %w(2 3 4 5 6 7 8 9 10).freeze
@@ -153,7 +153,7 @@ class Card # :nodoc:
   end
 end
 
-class Deck # :nodoc:
+class Deck # :nodoc: 
   attr_accessor :deck, :cards, :card_stack
 
   NUMBER_OF_DECKS = 2
@@ -183,7 +183,7 @@ class Deck # :nodoc:
   end
 end
 
-class Game # :nodoc:
+class Game # :nodoc: 
   attr_accessor :deck, :dealer, :player
 
   include UserInterface
