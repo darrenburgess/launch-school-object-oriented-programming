@@ -1,8 +1,8 @@
 require 'pry'
 
-module UserInterface
+module UserInterface # :nodoc:
   def clear
-    system 'clear' or system 'cls'
+    system('clear') || system('cls')
   end
 
   def blank_line
@@ -14,15 +14,15 @@ module UserInterface
   end
 end
 
-module Strategy
+module Strategy # :nodoc:
   @chart = 'create a hash of 2 deck strategy chart'
-  # http://www.blackjackchamp.com/strategy/2-deck-chart/ 
+  # http://www.blackjackchamp.com/strategy/2-deck-chart/
 
   def derive_hint
   end
 end
 
-class Participant
+class Participant # :nodoc:
   attr_accessor :hand, :score
 
   include UserInterface
@@ -39,10 +39,10 @@ class Participant
       total += card.value
     end
 
-    ace_value = 10 * hand.count{ |card| card.rank == "Ace" }
+    ace_value = 10 * hand.count { |card| card.rank == 'Ace' }
 
     if total > HIGHEST_VALUE
-      total -= ace_value 
+      total -= ace_value
     else
       total
     end
@@ -57,7 +57,7 @@ class Participant
   end
 end
 
-class Player < Participant
+class Player < Participant # :nodoc:
   attr_accessor :bank_roll
 
   def initialize
@@ -73,7 +73,7 @@ class Player < Participant
     end
   end
 
-  def get_input
+  def input
     answer = nil
     loop do
       puts '(H)it or (S)tick?'
@@ -90,7 +90,7 @@ class Player < Participant
   end
 end
 
-class Dealer < Participant
+class Dealer < Participant # :nodoc:
   attr_accessor :hidden
 
   STICKS = 17
@@ -105,7 +105,7 @@ class Dealer < Participant
     puts "Dealer's hand:"
     hand.each do |card|
       if hide_card?
-        puts "-- hole card --"
+        puts '-- hole card --'
         @hidden = false
       else
         puts card.to_s
@@ -121,24 +121,24 @@ class Dealer < Participant
     score >= 17
   end
 
-  def hide 
+  def hide
     @hidden = true
   end
 end
 
-class Card
+class Card # :nodoc:
   attr_accessor :suit, :rank, :value
 
   NUMBERS = %w(2 3 4 5 6 7 8 9 10).freeze
   FACE_CARDS = %w(King Queen Jack).freeze
 
-  def initialize rank, suit 
+  def initialize(rank, suit)
     @rank = rank
     @suit = suit
-    @value = get_value
+    @value = card_value
   end
 
-  def get_value
+  def card_value
     if NUMBERS.include? rank
       rank.to_i
     elsif FACE_CARDS.include? rank
@@ -153,11 +153,11 @@ class Card
   end
 end
 
-class Deck
+class Deck # :nodoc:
   attr_accessor :deck, :cards, :card_stack
 
   NUMBER_OF_DECKS = 2
-  SUITS  = %w(Hearts Clubs Spades Diamonds).freeze
+  SUITS = %w(Hearts Clubs Spades Diamonds).freeze
   RANKS = %w(Ace King Queen Jack 10 9 8 7 6 5 4 3 2).freeze
 
   def initialize
@@ -183,7 +183,7 @@ class Deck
   end
 end
 
-class Game
+class Game # :nodoc:
   attr_accessor :deck, :dealer, :player
 
   include UserInterface
@@ -197,10 +197,10 @@ class Game
   end
 
   def player_turn
-    loop do 
+    loop do
       player.display_cards
       display "Your score is #{player.score}"
-      choice = player.get_input
+      choice = player.input
       break if choice == 's'
       hit player
       break if player.busted?
@@ -226,7 +226,7 @@ class Game
     end
   end
 
-  def display_cards(participant) 
+  def display_cards(participant)
     participant.display_cards
   end
 
@@ -256,21 +256,21 @@ class Game
   end
 
   def quit?
-    display "Play again?"
+    display 'Play again?'
     answer = nil
     loop do
       answer = gets.chomp.chr.downcase
       break if %w(y n).include? answer
     end
-    answer == 'n' 
+    answer == 'n'
   end
 
-  def play 
+  def play
     clear
     deal
     display_cards dealer
     player_turn
-    dealer_turn if !player.busted?
+    dealer_turn unless player.busted?
     display_result
     reset
   end
@@ -280,7 +280,7 @@ class Game
       play
       break if quit?
     end
-    display "Thank you for playing!"
+    display 'Thank you for playing!'
   end
 end
 
