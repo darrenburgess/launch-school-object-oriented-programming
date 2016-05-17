@@ -4,9 +4,11 @@ module UserInterface
   def clear
     system 'clear' or system 'cls'
   end
-end
 
-module Messaging
+  def blank_line
+    puts ''
+  end
+
   def display(message)
     puts "==> #{message}"
   end
@@ -22,6 +24,8 @@ end
 
 class Participant
   attr_accessor :hand, :score
+
+  include UserInterface
 
   HIGHEST_VALUE = 21
 
@@ -62,11 +66,11 @@ class Player < Participant
   end
 
   def display_cards
-    puts "Player's hand:"
+    blank_line
+    display "Player's hand:"
     hand.each do |card|
       puts card.to_s
     end
-    puts ''
   end
 
   def get_input
@@ -97,6 +101,7 @@ class Dealer < Participant
   end
 
   def display_cards
+    blank_line
     puts "Dealer's hand:"
     hand.each do |card|
       if hide_card?
@@ -106,7 +111,6 @@ class Dealer < Participant
         puts card.to_s
       end
     end
-    puts ''
   end
 
   def hide_card?
@@ -182,8 +186,6 @@ end
 class Game
   attr_accessor :deck, :dealer, :player
 
-  include Setup
-  include Messaging
   include UserInterface
 
   HIGHEST_VALUE = 21
@@ -197,7 +199,7 @@ class Game
   def player_turn
     loop do 
       player.display_cards
-      puts "Your score is #{player.score}"
+      display "Your score is #{player.score}"
       choice = player.get_input
       break if choice == 's'
       hit player
@@ -229,7 +231,7 @@ class Game
   end
 
   def display_score(participant)
-    puts "Score: #{participant.score}"
+    display "Score: #{participant.score}"
   end
 
   def result
@@ -254,7 +256,7 @@ class Game
   end
 
   def quit?
-    puts "Play again?"
+    display "Play again?"
     answer = nil
     loop do
       answer = gets.chomp.chr.downcase
@@ -278,7 +280,7 @@ class Game
       play
       break if quit?
     end
-    puts "Thank you for playing!"
+    display "Thank you for playing!"
   end
 end
 
