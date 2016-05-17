@@ -221,8 +221,8 @@ class Game # :nodoc:
 
   def deal
     2.times do
-      hit(player)
-      hit(dealer)
+      hit player
+      hit dealer
     end
   end
 
