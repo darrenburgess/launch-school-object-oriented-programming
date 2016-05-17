@@ -25,17 +25,8 @@ module Setup
 end
 
 module UserInterface
-  def initialize
-  end
-
   def clear
     system 'clear' or system 'cls'
-  end
-
-  def diplay_hands
-  end
-
-  def prompt_player
   end
 end
 
@@ -54,28 +45,44 @@ module Strategy
 end
 
 class Participant
-  attr_accessor :hand
+  attr_accessor :hand, :score
+
+  HIGHEST_VALUE = 21
 
   def initialize
     @hand = []
   end
 
-  def stick
-  end
-
   def score
+    total = 0
+    hand.each do |card|
+      total += card.value
+    end
+
+    ace_value = 10 * hand.count{ |card| card.rank == "Ace" }
+
+    if total > HIGHEST_VALUE
+      total -= ace_value 
+    else
+      total
+    end
   end
 
-  def busted
+  def discard
+    @hand = []
+  end
+
+  def busted?
+    score > HIGHEST_VALUE
   end
 end
 
 class Player < Participant
-  attr_accessor :stash
+  attr_accessor :bank_roll
 
   def initialize
     super
-    @stash = nil
+    @bank_roll = nil
   end
 
   def display_cards
@@ -84,6 +91,16 @@ class Player < Participant
       puts card.to_s
     end
     puts ''
+  end
+
+  def get_input
+    answer = nil
+    loop do
+      puts '(H)it or (S)tick?'
+      answer = gets.chomp.downcase[0]
+      break if %(h s).include? answer
+    end
+    answer
   end
 
   def place_bet
@@ -95,6 +112,8 @@ end
 
 class Dealer < Participant
   attr_accessor :hidden
+
+  STICKS = 17
 
   def initialize
     @hidden = true
@@ -118,7 +137,12 @@ class Dealer < Participant
     hidden
   end
 
-  def stick
+  def stick?
+    score >= 17
+  end
+
+  def hide 
+    hidden = true
   end
 end
 
@@ -184,12 +208,33 @@ class Game
 
   include Setup
   include Messaging
+  include UserInterface
 
+  HIGHEST_VALUE = 21
 
   def initialize
     @deck = Deck.new
     @player = Player.new
     @dealer = Dealer.new
+  end
+
+  def player_turn
+    loop do 
+      player.display_cards
+      puts "Your score is #{player.score}"
+      choice = player.get_input
+      break if choice == 's'
+      hit player
+      break if player.busted?
+    end
+  end
+
+  def dealer_turn
+    loop do
+      hit dealer if dealer.score <= 16
+      break if dealer.busted?
+      break if dealer.stick?
+    end
   end
 
   def hit(participant)
@@ -203,19 +248,63 @@ class Game
     end
   end
 
-  def display_cards
-    player.display_cards
-    dealer.display_cards
-    binding.pry
+  def display_cards(participant) 
+    participant.display_cards
+  end
+
+  def display_score(participant)
+    puts "Score: #{participant.score}"
+  end
+
+  def result
+    return 'You busted!' if player.busted?
+    return 'You won!' if player.score > dealer.score
+    return 'Dealer busted, you won!' if dealer.busted?
+    return 'You lost!' if player.score <= dealer.score
+  end
+
+  def display_result
+    puts result
+    display_cards dealer
+    display_score dealer
+    display_cards player
+    display_score player
+  end
+
+  def reset
+    dealer.hide
+    dealer.discard
+    player.discard
+  end
+
+  def quit?
+    puts "Play again?"
+    answer = nil
+    loop do
+      answer = gets.chomp.chr.downcase
+      break if %w(y n).include? answer
+    end
+    answer == 'n' 
   end
 
   def play 
+    clear
     deal
-    display_cards
+    display_cards dealer
     player_turn
-    dealer_turn
+    dealer_turn if !player.busted?
+    display_result
+    reset
+  end
+
+  def start
+    loop do
+      play
+      break if quit?
+    end
+    puts "Thank you for playing!"
   end
 end
 
 game = Game.new
-game.play
+game.start
