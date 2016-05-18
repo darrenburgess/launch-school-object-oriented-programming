@@ -48,6 +48,10 @@ class Participant # :nodoc:
     end
   end
 
+  def hit(card)
+    @hand << card
+  end
+
   def discard
     @hand = []
   end
@@ -216,7 +220,11 @@ class Game # :nodoc:
   end
 
   def hit(participant)
-    participant.hand << deck.cards.pop
+    participant.hit draw_card
+  end
+
+  def draw_card
+    deck.cards.pop
   end
 
   def deal
