@@ -206,14 +206,14 @@ class Game # :nodoc:
       display "Your score is #{player.score}"
       choice = player.input
       break if choice == 's'
-      hit player
+      player.hit draw_card
       break if player.busted?
     end
   end
 
   def dealer_turn
     loop do
-      hit dealer if dealer.score <= 16
+      dealer.hit draw_card if dealer.score <= 16
       break if dealer.busted?
       break if dealer.stick?
     end
