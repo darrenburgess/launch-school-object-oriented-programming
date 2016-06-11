@@ -1,0 +1,79 @@
+* class
+  * classes are created with the class keyword
+  * and an upper case Name for the class
+  * a class instances is created with the new method
+  * a class is a blue print of the states
+  * and behaviors of the instances of the class
+* initialize is a constructor method
+  * it is called automatically when an instance is created
+  * you can call the initialize method of a parent with super
+  * the constructor can initialize instance variables
+  * instance variables begin with @var_name
+  * instance variables are only accessible via methods
+  * the new keyword will create object and call constructor
+  * allocate keyword creates object without calling constructor
+  * default values can be passed and are used if the value is not specified
+* methods
+  * methods are functions in the body of a class
+  * methods get called with dot notation: object.method
+  * or with send:  object.send :method
+  *
+* access modifiers
+  * all data is private and cannot be accessed outside the instance
+  * methods are public, protected or private
+  * public can be accessed from within the class and outside the class
+  * private methods are perhaps subject to change
+  * public methods are part of the class interface and should not be changed
+  * protected methods are like private methods, but can be called with self
+* inheritance
+  * inheritances allows you to use a previously defined class in a new class
+  * parent class is called the base
+  * child class is called the derived class
+  * the < operator creates a relationship between class DerivedClass < BaseClass
+  * super method calls the intialize constructor method of the parent class
+  * private and protected data and methods are inherited
+  * inheritance does not affect access
+  * super
+    * calls a method of the same name in the base class
+    * typically used to call the constructor initialize method
+    * but can be used to call any method by the same name
+    * automatically passes all argements
+    * or can can be called with empty () to call no argments ()
+* attribute accessors
+  * variables are private and so can only be accessed by methods
+  * methods
+    * attr_reader creates a getter method for an instance variable
+    * attr_writer creates a setter method for an instance variable
+    * attr_accessor creates both getter and setter methods
+    * called by passing a symbol of the variable to the method
+    * as in: attr_accessor :name, :age
+* class constants
+  * constants can be declared for a class
+  * like all constants, should be declared with all caps: CONSTANT
+  * class constants are accessed with :: from the class
+  * can be accessed from instance method
+* @@class_variable is declared in the class and accessible from instances methods
+* the to_s method
+  * all class objects have a to_s method
+  * it is called when an object is passed to the puts method
+  * a program can define its own to_s method to override the standard to_s
+* operator overloading
+  * operators are simply methods defined for the class
+  * they can be overridden as a class method to redefine them
+* class methods
+  * classes can have their own methods
+  * a class method is called on the class, not on the instance
+  * a class method cannot be called on the instance of a class
+  * similarly, class methods do not have access to instance variables
+  * class methods are defined use def self.method_name
+  * class methods get called on the class name
+* instance methods
+  * are called on an object using the dot operator
+  * three methods for creation
+    * using the def keyword
+    * using the attribute accessor: attr_reader, attr_writer, attr_accessor
+    * created after object instanciation:
+      def object.method
+        # code
+      end
+
