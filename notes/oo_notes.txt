@@ -76,4 +76,20 @@
       def object.method
         # code
       end
-
+* polymorphism
+  * if class B < A, then it does not have do have the same attributes and properties as A
+  * some data and methods and exist and behave differently
+  * in ruby it means we can redefine methods for derived classes
+* modules
+  * similar to classes in that is a collection of methods, classes and constants
+  * modules can not be instanciated, and cannot have sub classes
+  * modules can be included in a class with the include ModuleName
+  * ruby does not support multiple inheritance, where a class can inherit
+    from more than one parent class
+  * modules can be mixed in to a class to simulate the notion of multiple inheritance
+  * modules can be chained in the include method: include Module1, Module2
+* exceptions
+  * objects that indicate deviations from normal flow of program execution
+  * statements that can fail are place after the begin keyword
+  * after rescue is the code that will deal with the error
+  * raise keyword can be used to raise exceptions
