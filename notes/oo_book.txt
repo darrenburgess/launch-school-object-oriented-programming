@@ -1,0 +1,63 @@
+* object oriented programing intro
+  * objectives
+    * creates containers for data that can be changed with affecting the rest of the
+      program
+    * OO programs are the interaction of many small parts
+  * encapsulation
+    * a programming approach that hides functionality
+    * encapsulated functionality is unavailable to the rest of the code base
+    * accomplished by creating objects and invoking methods on those objects
+  * polymorphism
+    * data can be represented as many different types
+    * inheritance allows a class to inherit the behavior of a parent class
+    * a superclass is the parent of a class
+    * a subclass is the child class of a superclass
+    * modules are similar to classes, however they cannot create an object
+    * use the include ModuleName construct to include a modules methods
+      and data in a class
+* what is an object
+  * everything in Ruby is an object (almost)
+* classes define objects
+  * classes encapsulate the behavior(methods) and data(instance variables) of an object
+  * class are created with class ClassName; end; construct
+  * use CamelCase for class naming by convention
+  * objects are instantiated by call the class method new
+* class and objects
+  * a class will devine states(attributes) and behaviors
+  * instances variables store the state of the object's data
+  * instance methods store the behavior of the instantiated object
+  * all objects of a class have the same set of behaviors
+* initializing a new object with instances variables
+  * use the 'def initialize' method 
+  * when invoking ClassName.new, the initialize method is automatically called
+  * instances variables can be initialized when the object is created
+  * by passing parameters to the new method
+  * instances variables live on as long as the object instance exists
+* instance methods
+  * all objects of the same class have the same instance methods(behaviors)
+  * methods have access to instance variables
+* accessor methods
+  * can be used to return the value of an instance method
+  * def name; @name; end;
+  * this is called a getter method
+  * use a setter method to set the value of an instance variable
+  * for a setter method we can use the set_name= syntax
+  * this gives us some syntactical sugar by allowing: object.set_name = "string"
+* accessor methods 2
+  * save some lines of code by using attr_accessor method
+  * pass the instance variables represented as symbols as arguments to the method
+  * attr_accessor :var, :another var
+  * attr_accessor creates getter and setter methods for the instances of the class
+  * attr_reader creates getter method
+  * attr_writer creates setter method
+  * this allows us to reference the getter and setter methods directly
+  * they we can make changes to how the variable is get or set in one place
+  * getter and setter methods also give us the instance variables corresponding
+* calling methods with self
+  * we can't just use a setter method to set an instance variable 
+  * when doing so inside a method
+  * ruby thinks that we are just creating a local variable
+  * so instead use 'self.method_name'
+  * using self disambiguates from creating a local variable
+  * this could be used for getter methods as well, but it is not required.
+* class methods
