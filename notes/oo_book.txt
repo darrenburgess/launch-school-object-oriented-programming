@@ -61,3 +61,91 @@
   * using self disambiguates from creating a local variable
   * this could be used for getter methods as well, but it is not required.
 * class methods
+  * clas methods are created with the self keyword:
+    def self.method_name
+  * class methods are invoked on the class itself, not an instance of the class
+    ClassName.class_method
+* class variables
+  * use two @@ to indicate a class variable
+  * class variables can be accessed from an instance method
+  * used to track data about the class not about instances
+* constants
+  * constant can be created at the class level
+  * constant naming style is all caps and snake case CONSTANT_NAME
+  * constants do not change
+  * constants can be accessed by instance and class methods
+* to_s method
+  * the native to_s method is called automatically when passing a string to the
+    puts method
+  * default to_s prints the object automatically, which is not desirable when
+    printing an object
+  * override default to_s by creating a to_s instance method in the class
+  * note that the p method does not call to_s
+  * to_s is automatically called when interpolating a string
+* more about self
+  * self is used to specify a certain scope in a program
+  * use self in these cases
+    * when calling a setter method from within a class:
+      def method_name
+        self.setter = x
+      end
+    * self.class_method_name for class method definitions
+  * when used as a class method definition
+    * inside the class self represents the class
+    * when we write def self.method_name
+    * self refers to the class.  def self.method_name == def ClassName.method_name
+* class inheritance
+  * the inheriting class is the subclass
+  * superclass is the class subclass inherits from
+  * inheritance is use to extract common behaviors to a superclass
+  * the < operator is used to indicate inheritance class SubClass < SuperClass
+  * we can override an instance method by defining the same method in the SubClass
+* super method
+  * super is called inside an instance method
+  * super invokes the same method in the SuperClass
+  * super passes all arguments from the enclosing method
+  * you can pass arguments explicitly with super as well
+  * super is often used in the initialize method
+* module mixins
+  * modules are created with the module keyword
+    module ModuleName
+  * use camelcase, starting with capital letter (like class names)
+  * SuperClasses and SubClass are useful for modeling a natural hierarchy
+  * modules allow for exceptions to the strict class hierarchy
+  * only single inheritane from a class is allowed
+  * multiple modules can be mixed in to a class
+    include ModuleName, AnotherModule
+* method lookup
+  * ruby will follow a path up the class hierarchy looking for a method to run
+  * the method lookup path can be viewed with ancestors method
+    ClassName.ancestors
+  * the order of ancestors
+    current class, modules(inorder included), SuperClass(es)
+  * if method is not found then ruby throws undefined method error
+  * the last module is interogated first when listing includes:
+    include ModuleOne
+    include ModuleTwo  # module two search before module one
+  * but they are interogated in order with this syntax
+    include ModuleOne, ModuleTwo
+* use cases for modules
+  * mixing in common behavior and attributes
+  * name spacing - by organizing similiar classes in a module
+    * classes within a module are called with ::
+      buddy = Mammal::Dog.new
+  * defining out of place methods
+    * called with ::
+      value = Module::some_method(arguments)   # (or)
+      value = Module.some_method(args)  # preferred
+* private, protected, public
+  * public methods can be called from any instance of an object
+  * public methods can be called from the class name
+  * private methods can only be called by other instance methods
+  * to define methods as private, use the private keyword
+    all methods following such will be private until we use another keyword
+    private
+    def some_method
+    end
+  * protected
+    * similar to private in that they cannot be called from outside the class
+    * protected methods can be called from within the class
+  * 
